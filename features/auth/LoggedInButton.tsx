@@ -1,6 +1,5 @@
 "use client";
 
-import { Loader } from "@/components/ui/Loader";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -16,26 +15,26 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Loader } from "@/components/ui/loader";
 import { useMutation } from "@tanstack/react-query";
-import { LogOut } from "lucide-react";
-
+import { LogOut, User2 } from "lucide-react";
 import { Session } from "next-auth";
 import { signOut } from "next-auth/react";
+import Link from "next/link";
 
 export type LoggedInButtonProps = {
   user: Session["user"];
 };
 
-export const LoggedInButton = ({ user }: LoggedInButtonProps) => {
+export const LoggedInButton = (props: LoggedInButtonProps) => {
   const mutation = useMutation({
     mutationFn: async () => {
       signOut();
     },
   });
-
-  console.log("user", user);
 
   return (
     <DropdownMenu>
@@ -43,18 +42,25 @@ export const LoggedInButton = ({ user }: LoggedInButtonProps) => {
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="sm">
             <Avatar className="mr-2 h-6 w-6">
-              <AvatarFallback>{user?.name?.[0]}</AvatarFallback>
-              {user.image && (
+              <AvatarFallback>{props.user?.name?.[0]}</AvatarFallback>
+              {props.user.image && (
                 <AvatarImage
-                  src={user.image}
-                  alt={user.name ?? "user picture"}
+                  src={props.user.image}
+                  alt={props.user.name ?? "user picture"}
                 />
               )}
             </Avatar>
-            {user.name}
+            {props.user.name}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
+          <DropdownMenuItem asChild>
+            <Link href="/account">
+              <User2 className="mr-2" size={12} />
+              Account
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <AlertDialogTrigger asChild>
             <DropdownMenuItem>
               <LogOut className="mr-2" size={12} />
